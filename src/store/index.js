@@ -6,8 +6,16 @@ const tasksSlice = createSlice({
     items: [],
     itemSelected: {},
     showManageTask: false,
+    loading: false,
+    error: '',
   },
   reducers: {
+    handleLoading(state, action) {
+      state.loading = action.payload;
+    },
+    handleError(state, action) {
+      state.error = action.payload;
+    },
     populate(state, action) {
       state.items = action.payload;
     },
@@ -46,7 +54,93 @@ export const {
   selectTask,
   show,
   editTask,
+  handleError,
+  handleLoading,
 } = tasksSlice.actions;
+
+export const addRequest = (task) => {
+  return async (dispatch) => {
+    dispatch(handleLoading(true));
+    dispatch(handleError(''));
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_FIREBASE_URL + 'tasks.json',
+        {
+          method: 'POST',
+          body: JSON.stringify(task),
+          Headers: { 'Content-Type': 'application/json' },
+        }
+      );
+      if (!response.ok) throw new Error('Fail to post the request.');
+      const data = await response.json();
+      dispatch(addTask({ ...task, id: data.name }));
+    } catch (err) {
+      dispatch(handleError('Error: ' + err.message));
+    }
+    dispatch(handleLoading(false));
+  };
+};
+
+export const editRequest = (task, id) => {
+  return async (dispatch) => {
+    dispatch(handleLoading(true));
+    dispatch(handleError(''));
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_FIREBASE_URL + 'tasks/' + id + '/.json',
+        {
+          method: 'PATCH',
+          body: JSON.stringify(task),
+          Headers: { 'Content-Type': 'application/json' },
+        }
+      );
+      if (!response.ok) throw new Error('Fail to update.');
+      dispatch(editTask({ ...task, id }));
+    } catch (err) {
+      dispatch(handleError('Error: ' + err.message));
+    }
+    dispatch(handleLoading(false));
+  };
+};
+
+export const delRequest = (id) => {
+  return async (dispatch) => {
+    dispatch(handleLoading(true));
+    dispatch(handleError(''));
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_FIREBASE_URL + 'tasks/' + id + '/.json',
+        {
+          method: 'DELETE',
+        }
+      );
+      if (!response.ok) throw new Error('Fail to delete the item.');
+      dispatch(delTask(id));
+    } catch (err) {
+      dispatch(handleError('Error: ' + err.message));
+    }
+    dispatch(handleLoading(false));
+  };
+};
+
+export const getRequest = (transformData) => {
+  return async (dispatch) => {
+    dispatch(handleLoading(true));
+    dispatch(handleError(''));
+    try {
+      const response = await fetch(
+        import.meta.env.VITE_FIREBASE_URL + 'tasks.json'
+      );
+      if (!response.ok) throw new Error('Fail to delete the item.');
+      const data = await response.json();
+      const tasks = transformData(data);
+      dispatch(populate(tasks.reverse()));
+    } catch (err) {
+      dispatch(handleError('Error: ' + err.message));
+    }
+    dispatch(handleLoading(false));
+  };
+};
 
 export const store = configureStore({
   reducer: tasksSlice.reducer,

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { addTask, toggle, editTask } from '../store/index';
+import { toggle, addRequest, editRequest } from '../store/index';
 
 export default function NewTask() {
   const dispatch = useDispatch();
@@ -26,29 +26,19 @@ export default function NewTask() {
       'Nov',
       'Dec',
     ];
+    const task = {
+      title: e.target.title.value,
+      description: e.target.description.value,
+      date: `${months[now.getMonth()]} ${now.getDay()}, ${now.getFullYear()}`,
+      completed: false,
+    };
 
     if (itemSelected.id) {
-      dispatch(
-        editTask({
-          id: itemSelected.id,
-          title: e.target.title.value,
-          description: e.target.description.value,
-          date: `${
-            months[now.getMonth()]
-          } ${now.getDay()}, ${now.getFullYear()}`,
-        })
-      );
+      dispatch(editRequest(task, itemSelected.id));
       return;
     }
 
-    dispatch(
-      addTask({
-        id: Date.now(),
-        title: e.target.title.value,
-        description: e.target.description.value,
-        date: `${months[now.getMonth()]} ${now.getDay()}, ${now.getFullYear()}`,
-      })
-    );
+    dispatch(addRequest(task));
   };
 
   return (

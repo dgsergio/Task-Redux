@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { populate } from '../store/index';
-import dummyTasks from '../mocks/dummy-tasks';
+import { getRequest } from '../store/index';
 import Tasks from './Tasks';
 import Cards from './Cards';
 import searchIcon from '../assets/search.svg';
@@ -14,12 +13,22 @@ export default function Main() {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.items);
   const showManageTask = useSelector((state) => state.showManageTask);
+  const loading = useSelector((state) => state.loading);
+  const error = useSelector((state) => state.error);
   const inputRef = useRef();
   const debounceRef = useRef();
 
+  const transformData = (data) => {
+    let newData = [];
+    for (let item in data) {
+      newData.push({ id: item, ...data[item] });
+    }
+    return newData;
+  };
+
   useEffect(() => {
-    dispatch(populate(dummyTasks));
-  }, [dispatch, dummyTasks]);
+    dispatch(getRequest(transformData));
+  }, [dispatch]);
 
   useEffect(() => {
     if (!query) {
@@ -38,7 +47,7 @@ export default function Main() {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       setQuery(e.target.value.toLowerCase());
-    }, 800);
+    }, 400);
   };
 
   const onClearQuery = () => {
@@ -64,6 +73,8 @@ export default function Main() {
         )}
       </form>
       <Cards tasks={searchResult} />
+      {loading && <div className="message">Loading...</div>}
+      {error && <div className="message error">{error}</div>}
       {showManageTask && <NewTask />}
       <Tasks />
     </main>

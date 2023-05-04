@@ -149,9 +149,19 @@ button.input-icon:hover {
   color: #ff106b;
 }
 
+.message {
+  text-align: center;
+  padding: 1rem;
+}
+
 /* Tasks */
 .all-tasks {
   margin: 2.5rem auto 0;
+}
+
+.complete {
+  filter: grayscale();
+  text-decoration: line-through;
 }
 
 .all-tasks-header {
@@ -202,7 +212,7 @@ button.input-icon:hover {
 .task-content {
   display: flex;
   align-items: center;
-  column-gap: 3rem;
+  width: 100%;
 }
 
 .task h3 {
@@ -248,15 +258,20 @@ button.input-icon:hover {
   width: 2.2rem;
 }
 
+.line-through {
+  text-decoration: line-through;
+}
+
 .task-icon-opt {
   list-style: none;
   background-color: white;
   z-index: 20;
   text-align: right;
   padding: 1rem;
+  font-size: 1.5rem;
   position: absolute;
-  right: 4rem;
-  top: -8rem;
+  right: 5rem;
+  top: -7rem;
   border: 0.1rem solid rgba(0, 0, 0, 0.2);
   border-radius: 0.5rem;
   box-shadow: 0.3rem 0.3rem 0.3rem 0 rgba(0, 0, 0, 0.15);
@@ -279,10 +294,7 @@ button.input-icon:hover {
 }
 .task-icon-opt li button:hover {
   background-color: transparent;
-}
-
-.task-icon-opt li:last-child button:hover {
-  color: red;
+  color: #ff106b;
 }
 
 .task-icon-opt li {
@@ -292,6 +304,24 @@ button.input-icon:hover {
 
 .task-icon-opt li:last-child {
   border-bottom: none;
+}
+
+.task-info {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+}
+
+.task-info p {
+  text-align: right;
+}
+
+@media (min-width: 480px) {
+  .task-info {
+    margin: 0 3rem;
+  }
 }
 
 /* New-Task */

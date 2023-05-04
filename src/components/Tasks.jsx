@@ -20,7 +20,7 @@ export default function Tasks() {
         )}
       </div>
       {tasks?.map((task) => (
-        <Task key={task.id} id={task.id} date={task.date} title={task.title} />
+        <Task key={task.id} id={task.id} task={task} />
       ))}
     </section>
   );
