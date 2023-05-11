@@ -9,7 +9,7 @@ describe('cards component', () => {
     expect(errorEl).toBeInTheDocument();
   });
 
-  it('should render 3 tasks with card compenent', () => {
+  it('should render 3 tasks with card compenent (integration test)', () => {
     render(<Cards tasks={dummyTasks} />);
     const imgCardEl = screen.getAllByRole('img');
     expect(imgCardEl).toHaveLength(3);
